@@ -9,7 +9,6 @@ from telegram import ReplyKeyboardMarkup
 from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters,
                           ConversationHandler, PicklePersistence)
 
-# Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
@@ -125,17 +124,15 @@ def error(update, context):
 
 
 def main():
-    # Set up token and proxy
     with open("config.json") as json_file:
         json_data = json.load(json_file)
         token = json_data["TOKEN"]
-    # Create the Updater and pass it your bot's token.
+        
     pp = PicklePersistence(filename='emotionbot_v3')
     updater = Updater(token, persistence=pp, use_context=True)
 
-    # Get the dispatcher to register handlers
     dp = updater.dispatcher
-    # Add conversation handler with the states CHOOSING, TYPING_CHOICE and TYPING_REPLY
+    
     regex_str = "|".join([x for l in reply_keyboard for x in l])
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler('start', start)],
@@ -158,15 +155,12 @@ def main():
 
     help_handler = CommandHandler('help', show_help)
     dp.add_handler(help_handler)
-    # log all errors
+    
     dp.add_error_handler(error)
 
     # Start the Bot
     updater.start_polling()
 
-    # Run the bot until you press Ctrl-C or the process receives SIGINT,
-    # SIGTERM or SIGABRT. This should be used most of the time, since
-    # start_polling() is non-blocking and will stop the bot gracefully.
     updater.idle()
 
 
